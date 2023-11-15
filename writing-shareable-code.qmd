@@ -1,0 +1,174 @@
+---
+format: "revealjs"
+---
+
+## Sharing code {.smaller}
+
+-   We want to share code for many reasons:
+    -   Have others see or check our work
+    -   Make life easier for ourselves
+    -   Allow others to learn from and extend our work
+    -   &c.
+-   We'll discuss how to make code shareable:
+    1.  Have a workflow *you* can reproduce
+    2.  Join things together in a Project
+    3.  Separate *code* and *data*
+    4.  Dependency management
+-   And we'll try and get it working ourselves!
+
+## Have a workflow *you* can reproduce
+
+**If you can't reproduce it, others can't**
+
+So let's fix that.
+
+We want to make it so that **you get the right results starting from a fresh environment**.
+
+### Back up your current workspace image
+
+```         
+save.image(file='session_backup.RData')
+```
+
+## Wipe your workspace
+
+![Click the broom icon on your Environment tab](img/wipe.png){fig-align="center"}
+
+## Run your script
+
+Restart R with **Session \> Restart R**
+
+![Run your script from top to bottom](img/run.png){fig-align="center"}
+
+## Did it work?
+
+-   If yes, great
+
+-   If not, we'll need to fix that - this can take a while but is well worth doing!
+
+------------------------------------------------------------------------
+
+Once it works, you probably want to turn off automatic data saving/loading
+
+**Tools \> Global Options \>**
+
+![Set 'Save workspace' to Never, and probably uncheck 'Restore'](img/rdata.png){fig-align="center"}
+
+## Join things together in a Project
+
+Projects are RStudio's way of grouping files together.
+
+Your work probably has more than one file. It should at least have separate data and code files.
+
+We use projects to group them together, and let R figure out where things are *relative to the project folder*.
+
+## Create a project {.smaller}
+
+**File \> New Project**
+
+![You can get ahead of the game by checking the 'Use renv' and 'Create a git repository' boxes](img/new-project.png){fig-align="center"}
+
+## Organise your files {.smaller}
+
+Now you have a project, you can use it to organise your files.
+
+![An example layout for your files](img/files.png){fig-align="center"}
+
+Choose a layout that makes sense to you, but try to get your scripts and data separated.
+
+Update your code to point to new files where necessary.
+
+Instead of using **absolute links** (starting with / or a drive letter like C://), use **relative links**, which are treated as if they start with the project folder.
+
+So `/Users/MJ/R/my-r-project/data/numbers.csv` would become `data/numbers.csv`.
+
+## Separate code and data {.smaller}
+
+We can usually share code pretty freely, but we're often constrained in how we treat data, especially raw data.
+
+We'll make life easier for ourselves by clearly separating data we can share from data we can't.
+
+The quick and simple way to do this is to locate your data directory *outside* your project directory.
+
+So if your project directory is `/Users/MJ/R/my-r-project` you could put your data in a sibling directory: `/Users/MJ/R/my-r-project_data/numbers.csv`.
+
+You reference that sibling directory in your code by using a relative link that starts with `..`, e.g. `../my-r-project_data/numbers.csv`. The `..` means 'go up one directory level'.
+
+Now when you copy your project directory to show someone, you don't copy the data.
+
+If you're using this approach, **remember to save outputs outside the code directory**, too.
+
+::: aside
+My favourite approach is to save data to a different platform entirely, e.g. [Figshare](https://figshare.com/), and then download it from there in the analysis scripts. It's slower, but works from anywhere!
+:::
+
+## Dependency management {.smaller}
+
+The last big thing to tackle is dependency management.
+
+The commands in your scripts are interpreted by the environment they're run in.
+
+If that environment changes, the results of your commands can change.
+
+If you're running R 4.1 or newer, you can chain commands together with the native pipe operator: `mtcars |> subset(cyl == 4) |> nrow()`, but if you ran that code with an earlier version of R you would get a syntax error.
+
+If you're using the `magrittr` package (or something that imports it, like `tidyverse`), you can use the tidy pipe operator: `mtcars %>% subset(cyl == 4) %>% nrow()`. If you don't have the `magrittr` package loaded in the environment, though, it won't work.
+
+![A common symptom of environment problems](img/error.png){fig-align="center"}
+
+## Environment as code {.smaller}
+
+There are tools that help with environment management. One we'll look at here is `renv`.
+
+### Did you check the 'Use renv' box when creating your project?
+
+::: panel-tabset
+## Yes
+
+Figure out what version of renv you got by running `packageVersion("renv")`.
+
+## No
+
+Install it now with: `install.packages("renv@1.0.3")` . The bit after the @ tells R what version of the package to install.
+
+Once it's installed, activate it with `renv::activate()`
+:::
+
+Note your R version by running `R.Version()$version.string`.
+
+The R version and the renv version should provide all someone else needs to know how to run your code.
+Make a note of them in a text file in your project, or at the top of your scripts.
+
+## Using renv {.smaller}
+
+renv works by installing your packages inside the project (with some clever
+cache management to reduce space).
+
+You need to tell it to save a list of the packages you've used by running
+`renv::snapshot()` after your install new packages.
+
+Whenever you need to use packages, e.g. when you first try to run code on a
+different computer, you'll install all the packages at once with 
+`renv::restore()`.
+
+You now have all you need to run your scripts on another computer.
+
+## Let's try it
+
+-   [These slides](https://mjaquiery.github.io/writing-shareable-code/)
+-   [Hadley on this topic](https://r4ds.hadley.nz/workflow-scripts.html)
+
+
+## How I actually do things {.smaller}
+
+My work occasionally involves running data analysis. I always set stuff up so 
+it's easy to share.
+
+-   Use projects for everything, even very simple scripts
+-   Provide an entire pipeline, run from scratch every time, fetch and process data, and to produce reports
+-   Use Git repositories for everything, even if I don't put them on GitHub
+-   Use environment management
+-   Store data offsite, or inside the project but excluded with .gitignore
+-   Outputs are usually excluded with .gitignore, too
+
+For many non-analysis projects I use Docker containers.

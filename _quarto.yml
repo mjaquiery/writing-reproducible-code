@@ -1,0 +1,7 @@
+project:
+  title: "writing-reproducible-code"
+
+editor: visual
+
+execute:
+  freeze: auto
