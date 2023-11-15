@@ -158,6 +158,8 @@ You now have all you need to run your scripts on another computer.
 -   [These slides](https://mjaquiery.github.io/writing-shareable-code/)
 -   [Hadley on this topic](https://r4ds.hadley.nz/workflow-scripts.html)
 
+We didn't cover Git and [GitHub](https://github.com/) here, but they're 
+**well worth learning to use**.
 
 ## How I actually do things {.smaller}
 
