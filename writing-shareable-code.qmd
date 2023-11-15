@@ -155,6 +155,9 @@ You now have all you need to run your scripts on another computer.
 
 ## Let's try it
 
+If you don't have a project to make shareable, try using this tiny example
+project: https://github.com/mjaquiery/writing-reproducible-code/raw/main/non-shareable-code.zip
+
 -   [These slides](https://mjaquiery.github.io/writing-shareable-code/)
 -   [Hadley on this topic](https://r4ds.hadley.nz/workflow-scripts.html)
 
